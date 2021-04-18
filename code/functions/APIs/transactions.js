@@ -5,6 +5,7 @@ const { db } = require('../util/admin');
 exports.getAllTransactions = (request, response) => {
     db
         .collection('transactions')
+        .where('username', '==', request.user.username)
         .orderBy('date', 'desc')
         .get()
         .then((data) => {
@@ -64,6 +65,10 @@ exports.deleteTransaction = (request, response) => {
     document
         .get()
         .then((doc) => {
+            if (doc.data().username !== request.user.username) {
+                return response.status(403).json({ error: "UnAuthorized" })
+            }
+
             if (!doc.exists) {
                 return response.status(404).json({ error: 'Transaction not found' })
             }
@@ -78,20 +83,20 @@ exports.deleteTransaction = (request, response) => {
         });
 };
 
-// edit singel transaction
-exports.editTransaction = ( request, response ) => { 
-    if(request.body.transactionId){
-        response.status(403).json({message: 'Not allowed to edit'});
+// edit single transaction
+exports.editTransaction = (request, response) => {
+    if (request.body.transactionId) {
+        response.status(403).json({ message: 'Not allowed to edit' });
     }
     let document = db.collection('transactions').doc(`${request.params.transactionId}`);
     document.update(request.body)
-    .then(()=> {
-        response.json({message: 'Updated Transaction successfully'});
-    })
-    .catch((err) => {
-        console.error(err);
-        return response.status(500).json({ 
-                error: err.code 
+        .then(() => {
+            response.json({ message: 'Updated Transaction successfully' });
+        })
+        .catch((err) => {
+            console.error(err);
+            return response.status(500).json({
+                error: err.code
+            });
         });
-    });
 };

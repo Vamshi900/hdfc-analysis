@@ -22,6 +22,7 @@ const {
 //users
 const {
     getUserDetail,
+    updateUserDetails,
     loginUser,
     signUpUser,
     uploadProfilePhoto
@@ -29,16 +30,16 @@ const {
 
 
 // todos
-app.get('/todos', getAllTodos);
-app.post('/todo', postOneTodo);
-app.delete('/todo/:todoId', deleteTodo);
+app.get('/todos', auth, getAllTodos);
+app.post('/todo', auth, postOneTodo);
+app.delete('/todo/:todoId', auth, deleteTodo);
 app.put('/todo/:todoId', editTodo);
 
-//transactions
-app.get('/transactions', getAllTransactions);
-app.post('/transaction', postOneTransaction);
-app.delete('/transaction/:transactionId', deleteTransaction);
-app.put('/transaction/:transactionId', editTransaction);
+//transactionss
+app.get('/transactions', auth, getAllTransactions);
+app.post('/transaction', auth, postOneTransaction);
+app.delete('/transaction/:transactionId', auth, deleteTransaction);
+app.put('/transaction/:transactionId', auth, editTransaction);
 
 
 //users
@@ -46,5 +47,6 @@ app.post('/login', loginUser);
 app.post('/signup', signUpUser);
 app.post('/user/image', auth, uploadProfilePhoto);
 app.get('/user', auth, getUserDetail);
+app.post('/user', auth, updateUserDetails);
 
 exports.api = functions.https.onRequest(app);

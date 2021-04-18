@@ -5,6 +5,7 @@ const { db } = require('../util/admin');
 exports.getAllTodos = (request, response) => {
     db
         .collection('todos')
+        .where('username', '==', request.user.username)
         .orderBy('createdAt', 'desc')
         .get()
         .then((data) => {
@@ -36,7 +37,8 @@ exports.postOneTodo = (request, response) => {
     const newTodoItem = {
         title: request.body.title,
         body: request.body.body,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        username: request.user.username,
     }
     db
         .collection('todos')
@@ -57,6 +59,10 @@ exports.deleteTodo = (request, response) => {
     document
         .get()
         .then((doc) => {
+            if (doc.data().username !== request.user.username) {
+                return response.status(403).json({ error: "UnAuthorized" })
+            }
+
             if (!doc.exists) {
                 return response.status(404).json({ error: 'Todo not found' })
             }
@@ -71,19 +77,19 @@ exports.deleteTodo = (request, response) => {
         });
 };
 
-exports.editTodo = ( request, response ) => { 
-    if(request.body.todoId || request.body.createdAt){
-        response.status(403).json({message: 'Not allowed to edit'});
+exports.editTodo = (request, response) => {
+    if (request.body.todoId || request.body.createdAt) {
+        response.status(403).json({ message: 'Not allowed to edit' });
     }
     let document = db.collection('todos').doc(`${request.params.todoId}`);
     document.update(request.body)
-    .then(()=> {
-        response.json({message: 'Updated successfully'});
-    })
-    .catch((err) => {
-        console.error(err);
-        return response.status(500).json({ 
-                error: err.code 
+        .then(() => {
+            response.json({ message: 'Updated successfully' });
+        })
+        .catch((err) => {
+            console.error(err);
+            return response.status(500).json({
+                error: err.code
+            });
         });
-    });
 };

@@ -29,7 +29,7 @@ const {
 } = require('./APIs/users')
 
 
-// todos
+// todos 
 app.get('/todos', auth, getAllTodos);
 app.post('/todo', auth, postOneTodo);
 app.delete('/todo/:todoId', auth, deleteTodo);

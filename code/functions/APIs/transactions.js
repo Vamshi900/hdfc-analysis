@@ -42,6 +42,7 @@ exports.postOneTransaction = (request, response) => {
         transaction: request.body.transaction,
         amount: request.body.amount,
         type: request.body.type,
+        username: request.user.username
         // createdAt: new Date().toISOString() // bug need to fix to use ISO time stamp string
     }
     db
@@ -70,7 +71,7 @@ exports.deleteTransaction = (request, response) => {
             }
 
             if (!doc.exists) {
-                return response.status(404).json({ error: 'Transaction not found' })
+                return response.status(404).json({ error: 'Transaction not found in database' })
             }
             return document.delete();
         })

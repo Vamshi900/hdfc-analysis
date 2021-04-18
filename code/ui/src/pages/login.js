@@ -1,6 +1,5 @@
 // Material UI components
 import React, { Component } from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -103,9 +102,6 @@ class login extends Component {
 			<Container component="main" maxWidth="xs">
 				<CssBaseline />
 				<div className={classes.paper}>
-					<Avatar className={classes.avatar}>
-						<LockOutlinedIcon />
-					</Avatar>
 					<Typography component="h1" variant="h5">
 						Login
 					</Typography>
